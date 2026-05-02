@@ -1,20 +1,34 @@
 from openai import OpenAI
+from api import Client
 from configs import config
 import time
 import chromadb
 from chromadb.utils import embedding_functions
+import json
+
+with open('./configs/config.json', 'r', encoding="utf-8") as f:
+    data = json.load(f)
+
+choice_name = input()
+
+for i in data:
+    api_name = i["name"]
+    if api_name == choice_name:
+        api_style = i["style"]
+        base_url = i["base_url"]
 
 SYSTEM_PROMPT = "你是一个ai助手"
 #init openai
-model_client = OpenAI(
+model_client = Client(
     api_key=config.api_key,
-    base_url=config.base_url
+    base_url=base_url,
+    api_style=api_style
 )
 
 # init chroma
-# chroma_client = chromadb.PersistentClient("./chroma_db")
-# ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="BAAI/bge-small-zh-v1.5")
-# collection = chroma_client.get_or_create_collection("my_docs", embedding_function=ef)
+chroma_client = chromadb.PersistentClient("./chroma_db")
+ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="BAAI/bge-small-zh-v1.5")
+collection = chroma_client.get_or_create_collection("my_docs", embedding_function=ef)
 
 def main():
     messages = []
@@ -23,7 +37,7 @@ def main():
         user_input = input()
         if(user_input == "bye"): break
         messages.append({"role":"user","content":user_input})
-        response = model_client.chat.completions.create(
+        response = model_client.create(
             model=config.model,
             messages=messages,
             stream=True,
