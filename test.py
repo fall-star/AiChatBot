@@ -1,10 +1,5 @@
-def b(b,c):
-    print(b)
-    print(c)
+from prompt_toolkit.formatted_text import HTML
+from prompt_toolkit import print_formatted_text
 
-def a(**kwargs):
-    kwargs["c"] = kwargs["a"]
-    del kwargs["a"]
-    return b(**kwargs)
-
-a(a = 1,b = 2)
+print_formatted_text(HTML("<b><red>model_output:</red></b>"))
+print_formatted_text(HTML("<red>model_output:</red>"))

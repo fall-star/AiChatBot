@@ -10,4 +10,5 @@ dependencies = [
     "litellm>=1.83.0",
     "openai>=2.33.0",
     "prompt-toolkit>=3.0.52",
+    "sentence-transformers>=5.4.1",
 ]
